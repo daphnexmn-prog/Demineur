@@ -8,7 +8,6 @@ SIZE_X = 30
 SIZE_Y = 20
 NB_MINES = 100
 
-#coucou
 
 def create_board():
     mines=0
