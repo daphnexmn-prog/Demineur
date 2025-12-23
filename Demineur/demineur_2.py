@@ -32,7 +32,6 @@ def create_board():
             mines += 1
         
     return tiles
-print(create_board())
 
 board = tk.Tk()
 board.geometry("930x520")
