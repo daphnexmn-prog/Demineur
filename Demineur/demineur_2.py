@@ -1,19 +1,13 @@
 import tkinter as tk
 from random import randint
 
-<<<<<<< HEAD
 SIZE_X = 30 # nombre de colonnes
 SIZE_Y = 20 # nombre de lignes
 NB_MINES = 100 # nombre de mines
-=======
-board = tk.Tk()
-board.geometry("930x520")
 
 SIZE_X = 30
 SIZE_Y = 20
 NB_MINES = 100
-
->>>>>>> a45bf4e79e0ef3d98bf685847c8de3a692839284
 
 def create_board():
     """Crée la grille avec NB_MINES mines placées aléatoirement
