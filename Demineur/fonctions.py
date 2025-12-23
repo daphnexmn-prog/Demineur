@@ -5,10 +5,6 @@ SIZE_X = 30 # nombre de colonnes
 SIZE_Y = 20 # nombre de lignes
 NB_MINES = 100 # nombre de mines
 
-SIZE_X = 30
-SIZE_Y = 20
-NB_MINES = 100
-
 def create_board():
     """Crée la grille avec NB_MINES mines placées aléatoirement
 
@@ -32,11 +28,3 @@ def create_board():
             mines += 1
         
     return tiles
-
-board = tk.Tk()
-board.geometry("930x520")
-board.title("Démineur")
-for col in range(SIZE_X):
-    for row in range(SIZE_Y):
-        bouton = tk.Button(board, width=3)
-        bouton.grid(row = row, column = col)
