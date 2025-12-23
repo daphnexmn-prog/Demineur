@@ -12,4 +12,3 @@ for col in range(SIZE_X):
         bouton = tk.Button(board, width=3)
         bouton.grid(row = row, column = col) # place chaque bouton
 board.mainloop()
-print(help(create_board))
