@@ -20,15 +20,15 @@ def create_board():
 
     Returns
     -------
-    list[list[list[int]]]
-        La grille remplie de [0] (case vide) et de [1] (bombe)
+    list[list[int]]
+        La grille remplie de 0 (case vide) et de 1 (bombe)
     """
     mines = 0 # compteur de mines 
-    tiles = [[[0] for i in range (SIZE_X)] for j in range (SIZE_Y)] # remplit la grille de [0]
+    tiles = [[0 for i in range (SIZE_X)] for j in range (SIZE_Y)] # remplit la grille de [0]
     while mines < NB_MINES:
         randx = randint(0,SIZE_X-1) # colonne aléatoire
         randy = randint(0,SIZE_Y-1) # ligne aléatoire
-        if tiles[randy][randx] == [0]:
-            tiles[randy][randx] = [1]
+        if tiles[randy][randx] == 0:
+            tiles[randy][randx] = 1
             mines += 1
     return tiles
