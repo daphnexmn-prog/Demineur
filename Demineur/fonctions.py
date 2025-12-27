@@ -1,9 +1,12 @@
 """
 Fonctions :
     create_board() : Crée la grille avec NB_MINES placées aléatoirement
+    ajouter_drapeau(grille, row, column) : Ajoute un drapeau à la case souhaitée
+    enlever_drapeau(grille, row, column) : Enlève un drapeau à la case souhaitée
+    reveler_case(grille, row, column) : Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour
+    gagne(compteur) : Condition de victoire
 """
 
-import tkinter as tk
 from random import randint
 
 SIZE_X = 30 # nombre de colonnes
@@ -11,12 +14,7 @@ SIZE_Y = 20 # nombre de lignes
 NB_MINES = 100 # nombre de mines
 
 def create_board():
-    """
-    Crée la grille avec NB_MINES mines placées aléatoirement
-
-    Parameters
-    ----------
-    None
+    """ Crée la grille avec NB_MINES mines placées aléatoirement
 
     Returns
     -------
@@ -34,45 +32,29 @@ def create_board():
     return tiles
 
 def ajouter_drapeau(grille, row, column):
-    """
-    Ajoute un drapeau à la case souhaitée
-
-    Parameters
-    ----------
-    grille : list[list]
-        La grille, chaque case étant assimilée au nombre de mines qui l'entoure 
-        ou à * pour les mines
-    row : int
-        La rangée de la case 
-    column : int
-        La colonne de la case
-
-    Returns
-    -------
-    list[list]
-        La grille actualisée avec le drapeau sur la case concernée
-    """
+    """ Ajoute un drapeau à la case souhaitée"""
     grille[row][column] = "d" + str(grille[row][column]) 
     return grille
 
 def enlever_drapeau(grille, row, column):
-    """
-    Enlève un drapeau à la case souhaitée
-
-    Parameters
-    ----------
-    grille : list[list]
-        La grille, chaque case étant assimilée au nombre de mines qui l'entoure 
-        ou à * pour les mines
-    row : int
-        La rangée de la case 
-    column : int
-        La colonne de la case
-
-    Returns
-    -------
-    list[list]
-        La grille actualisée sans drapeau sur la case concernée
-    """
+    """ Enlève un drapeau à la case souhaitée """
     grille[row][column] = grille[row][column][-1]
+    if grille[row][column] != "*" :
+        grille[row][column] = int(grille[row][column]) 
     return grille
+
+def reveler_case(grille, row, column):
+    """Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour"""
+    if grille[row][column] == "*" :
+        return "Mine" 
+    elif type(grille[row][column]) == str and grille[row][column][0] == "d":
+        return "Drapeau"
+    else :
+        return grille[row][column] 
+
+def gagne(compteur):
+    """Condition de victoire"""
+    if compteur[0] == SIZE_X * SIZE_Y - NB_MINES :
+        return True
+
+        
