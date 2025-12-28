@@ -30,7 +30,7 @@ def clic_gauche(event, grille, row, column, compteur):
             pass # message perdu
         elif type(case) == int :
             bouton.config(state = "disabled", relief = "sunken")
-            bouton.config(text = "") # faudra changer l'apparence du bouton avec le nombre
+            bouton.config(text = case) 
             compteur[0] += 1
             if gagne(compteur) :
                 pass # message gagné
@@ -40,13 +40,11 @@ def clic_droit(event, grille, row, column):
     bouton = event.widget
     if reveler_case(grille, row, column) == "Drapeau" : # s'il y a un drapeau
         grille = enlever_drapeau(grille, row, column)
-        bouton.config(text = "")
-        bouton.config(state = "normal") # réactive le bouton
-    elif bouton["state"] != "disabled":
+        bouton.config(text = "", state = "normal") # enlève le drapeau, réactive le bouton
+    elif bouton["state"] != "disabled": # si la case n'est pas désactivée
         grille = ajouter_drapeau(grille, row, column)
-        bouton.config(text = "🚩")
-        bouton.config(state = "disabled") # désactive le bouton
+        bouton.config(text = "🚩", state = "disabled") # met le drapeau, désactive le bouton
 
 compteur = [0]
-grille = create_board()
+grille = create_board() # faudra mettre la grille avec les vrais nombres
 creation_fenetre()

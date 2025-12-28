@@ -50,7 +50,7 @@ def reveler_case(grille, row, column):
     elif type(grille[row][column]) == str and grille[row][column][0] == "d":
         return "Drapeau"
     else :
-        return grille[row][column] 
+        return grille[row][column] # le nombre de mines autour
 
 def gagne(compteur):
     """Condition de victoire"""
