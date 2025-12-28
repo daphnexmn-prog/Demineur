@@ -31,6 +31,40 @@ def create_board():
             mines_count += 1
     return tiles
 
+def compter_mines(tiles, row, column):
+    """ Compte le nombre de mines autour de chaque case et determine si la case est deja une mine
+
+    Returns
+    -------
+    list[list[int ou str]]
+        La grille remplie de * (bombe) ou de int (case vide)
+    """
+    for i in range (row):
+        for j in range (column):
+            if tiles[row][column]==1:   #vérifie si la case est une mine
+                return "*"
+            else :
+                mine_case=0
+                for x in range (-1,2):  #parcourt les cases voisines
+                    for y in range (-1,2):
+                        new_col = column + x
+                        new_row = row + y
+                        if 0 <= new_col < SIZE_X and 0 <= new_row < SIZE_Y:   #vérifie que les cases voisines ne sont pas out of range
+                            if tiles[new_row][new_col] == 1: 
+                                mine_case += 1  #compte le nombre de mines autour de la case
+                return mine_case
+
+def grille_nombres(tiles,row,column):
+    """ Crée une grille comportant pour chaque case la valeur de la fonction compter_mines
+
+    Returns
+    -------
+    str(*) si la case est une mine
+    int(mine_case) le nombre de mines autour d'une case n'étant pas une mine
+    """
+    grille=[[compter_mines(tiles,row,column) for column in range(SIZE_X)] for row in range(SIZE_Y)]  #créé la grille en utilisant la fonction compter_mines
+    return grille
+
 def ajouter_drapeau(grille, row, column):
     """ Ajoute un drapeau à la case souhaitée"""
     grille[row][column] = "d" + str(grille[row][column]) 

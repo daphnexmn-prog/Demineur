@@ -46,5 +46,5 @@ def clic_droit(event, grille, row, column):
         bouton.config(text = "🚩", state = "disabled") # met le drapeau, désactive le bouton
 
 compteur = [0]
-grille = create_board() # faudra mettre la grille avec les vrais nombres
+grille = grille_nombres(create_board(), SIZE_Y, SIZE_X)
 creation_fenetre()
