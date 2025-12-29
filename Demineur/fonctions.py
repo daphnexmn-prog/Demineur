@@ -6,7 +6,7 @@ Fonctions :
     reveler_case(grille, row, column) : Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour
     gagne(compteur) : Condition de victoire
 """
-
+import tkinter as tk
 from random import randint
 
 SIZE_X = 30 # nombre de colonnes
