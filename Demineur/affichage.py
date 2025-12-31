@@ -30,11 +30,13 @@ def clic_gauche(event, first_clic, tiles, grille, boutons, row, column, compteur
         first_clic[0]=True
         print("cbon")
         if hardcore_mode[0]==True:
-            pass    # faire une fonction pour créer une zone de départ
+            proba = 1.3     #proba > 1 pour garantir les premieres cases
+            zone_depart(tiles, row, column, proba)
+            print ("ccbon")
         else:
             tiles[row][column]=[]
-            tiles = create_board(tiles)
-            grille = grille_nombres(tiles,grille)
+        tiles = create_board(tiles)
+        grille = grille_nombres(tiles,grille)
     bouton = event.widget
     case = reveler_case(grille, row, column)
     if bouton["state"] != "disabled":
@@ -75,7 +77,7 @@ def reveler_zone(grille, boutons, row, column, compteur):
 
 compteur = [0]
 first_clic=[False]
-hardcore_mode=[False]
+hardcore_mode=[True]
 tiles = [[0 for i in range (SIZE_X)] for j in range (SIZE_Y)]   # crée une grille remplie de [0]
 grille=[[None for column in range(SIZE_X)] for row in range(SIZE_Y)]    
 creation_fenetre()

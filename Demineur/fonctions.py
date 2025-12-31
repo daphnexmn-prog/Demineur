@@ -7,11 +7,11 @@ Fonctions :
     gagne(compteur) : Condition de victoire
 """
 import tkinter as tk
-from random import randint
+from random import *
 
 SIZE_X = 30 # nombre de colonnes
 SIZE_Y = 20 # nombre de lignes
-NB_MINES = 100 # nombre de mines
+NB_MINES = 400 # nombre de mines
 
 def difficulte(niveau):
     """ Renvoie le nombre de lignes, colonnes et mines en fonction du niveau choisi
@@ -103,6 +103,15 @@ def reveler_case(grille, row, column):
         return "Drapeau"
     else :
         return grille[row][column] # le nombre de mines autour
+
+def zone_depart(tiles, row, column, proba):
+    if 0 <= column < SIZE_X and 0 <= row < SIZE_Y:   #vérifie que la case n'est pas out of range
+        if tiles[row][column] != []:
+            if proba >= 0.2:   #empêche d'avoir une zone trop grande
+                tiles[row][column] = []    #empeche de placer une mine ici
+                for dx, dy in [(0,-1),(0,1),(1,0),(-1,0)]:   #parcourt les cases cases adjacentes (gauche,droite,haut,bas)
+                    if random() <= proba:   #genere un nombre entre 0 et 1, devant être inférieur à proba pour supprimer cette case
+                        zone_depart(tiles, row + dy, column + dx, proba*0.7)    #pour déterminer aléatoirement les cases safes
 
 def gagne(compteur):
     """Condition de victoire"""
