@@ -9,10 +9,6 @@ Fonctions :
 import tkinter as tk
 from random import *
 
-SIZE_X = 30 # nombre de colonnes
-SIZE_Y = 20 # nombre de lignes
-NB_MINES = 400 # nombre de mines
-
 def difficulte(niveau):
     """ Renvoie le nombre de lignes, colonnes et mines en fonction du niveau choisi
 
@@ -26,27 +22,34 @@ def difficulte(niveau):
     if niveau == "Intermédiaire":
         return (16, 16, 40)
     if niveau == "Avancé":
-        return (30, 16, 99)
-    # pour l'instant la fonction sert à rien mais je veux pas faire buguer le reste vu qu'on n'a pas encore de menu
+        return (16, 30, 99)
 
-def create_board(tiles):
-    """ Crée la grille avec NB_MINES mines placées aléatoirement
+def create_board(size_x, size_y, nb_mines):
+    """ Crée la grille avec nb_mines mines placées aléatoirement
 
+    Parameters
+    ---------
+    size_x : int
+        Le nombre de colonnes
+    size_y : int
+        Le nombre de lignes
+        
     Returns
     -------
     list[list[int]]
         La grille remplie de 0 (case vide) et de 1 (bombe)
     """
+    tiles = [[0 for i in range (size_x)] for j in range (size_y)]
     mines_count = 0 # compteur de mines 
-    while mines_count < NB_MINES:
-        randx = randint(0,SIZE_X-1) # colonne aléatoire
-        randy = randint(0,SIZE_Y-1) # ligne aléatoire
+    while mines_count < nb_mines:
+        randx = randint(0,size_x-1) # colonne aléatoire
+        randy = randint(0,size_y-1) # ligne aléatoire
         if tiles[randy][randx] == 0:
             tiles[randy][randx] = 1
             mines_count += 1
     return tiles
 
-def compter_mines(tiles, row, column):
+def compter_mines(tiles, row, column, size_x, size_y):
     """ Compte le nombre de mines autour de chaque case et determine si la case est deja une mine
 
     Returns
@@ -54,8 +57,6 @@ def compter_mines(tiles, row, column):
     list[list[int ou str]]
         La grille remplie de * (bombe) ou de int (case vide)
     """
-    # j'ai enlevé la boucle for i in range(row) et for j in range(column) (un truc comme ça) 
-    # parce que ça servait à rien et ça mettait des None sur la première ligne et la première colonne
     if tiles[row][column]==1:   #vérifie si la case est une mine
         return "*"
     else :
@@ -64,12 +65,12 @@ def compter_mines(tiles, row, column):
             for y in range (-1,2):
                 new_col = column + x
                 new_row = row + y
-                if 0 <= new_col < SIZE_X and 0 <= new_row < SIZE_Y:   #vérifie que les cases voisines ne sont pas out of range
+                if 0 <= new_col < size_x and 0 <= new_row < size_y:   #vérifie que les cases voisines ne sont pas out of range
                     if tiles[new_row][new_col] == 1: 
                         mine_case += 1  #compte le nombre de mines autour de la case
         return mine_case
 
-def grille_nombres(tiles,grille):
+def grille_nombres(tiles,grille, size_x, size_y):
     """ Crée une grille comportant pour chaque case la valeur de la fonction compter_mines
 
     Returns
@@ -77,9 +78,9 @@ def grille_nombres(tiles,grille):
     str(*) si la case est une mine
     int(mine_case) le nombre de mines autour d'une case n'étant pas une mine
     """
-    for column in range (SIZE_X):
-        for row in range (SIZE_Y):
-            grille[row][column]=compter_mines(tiles,row,column)  #créé la grille en utilisant la fonction compter_mines
+    for column in range (size_x):
+        for row in range (size_y):
+            grille[row][column]=compter_mines(tiles, row, column, size_x, size_y)  #créé la grille en utilisant la fonction compter_mines
     return grille
 
 
@@ -104,18 +105,18 @@ def reveler_case(grille, row, column):
     else :
         return grille[row][column] # le nombre de mines autour
 
-def zone_depart(tiles, row, column, proba):
-    if 0 <= column < SIZE_X and 0 <= row < SIZE_Y:   #vérifie que la case n'est pas out of range
+def zone_depart(tiles, row, column, proba, size_x, size_y):
+    if 0 <= column < size_x and 0 <= row < size_y :   #vérifie que la case n'est pas out of range
         if tiles[row][column] != []:
             if proba >= 0.2:   #empêche d'avoir une zone trop grande
                 tiles[row][column] = []    #empeche de placer une mine ici
                 for dx, dy in [(0,-1),(0,1),(1,0),(-1,0)]:   #parcourt les cases cases adjacentes (gauche,droite,haut,bas)
                     if random() <= proba:   #genere un nombre entre 0 et 1, devant être inférieur à proba pour supprimer cette case
-                        zone_depart(tiles, row + dy, column + dx, proba*0.7)    #pour déterminer aléatoirement les cases safes
+                        zone_depart(tiles, row + dy, column + dx, proba*0.7, size_x, size_y)    #pour déterminer aléatoirement les cases safes
 
-def gagne(compteur):
+def gagne(compteur, size_x, size_y, nb_mines):
     """Condition de victoire"""
-    if compteur[0] == SIZE_X * SIZE_Y - NB_MINES :
+    if compteur[0] == size_y * size_y - nb_mines :
         return True
 
         
