@@ -24,7 +24,7 @@ def difficulte(niveau):
     if niveau == "Avancé":
         return (16, 30, 99)
 
-def create_board(size_x, size_y, nb_mines):
+def create_board(tiles, size_x, size_y, nb_mines):
     """ Crée la grille avec nb_mines mines placées aléatoirement
 
     Parameters
@@ -39,7 +39,7 @@ def create_board(size_x, size_y, nb_mines):
     list[list[int]]
         La grille remplie de 0 (case vide) et de 1 (bombe)
     """
-    tiles = [[0 for i in range (size_x)] for j in range (size_y)]
+    # tiles = [[0 for i in range (size_x)] for j in range (size_y)]
     mines_count = 0 # compteur de mines 
     while mines_count < nb_mines:
         randx = randint(0,size_x-1) # colonne aléatoire

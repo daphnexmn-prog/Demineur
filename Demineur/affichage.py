@@ -39,7 +39,7 @@ def clic_gauche(first_clic, tiles, grille, boutons, row, column, compteur, size_
             print ("ccbon")
         else:
             tiles[row][column]=[]
-        tiles = create_board(size_x, size_y, nb_mines)
+        tiles = create_board(tiles, size_x, size_y, nb_mines)
         grille = grille_nombres(tiles,grille, size_x, size_y)
     bouton = boutons[row][column]
     case = reveler_case(grille, row, column)
