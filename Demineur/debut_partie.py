@@ -1,6 +1,6 @@
 """Début partie"""
 
-from affichage import *
+from affichage_board import *
 
 def interface_accueil():
     """Crée l'interface d'accueil"""
@@ -42,12 +42,13 @@ def debut_jeu(accueil):
     parametres = {"tiles": tiles, 
                   "grille" : grille, 
                   "boutons" : boutons,
-                  "first_clic" : [False],
-                  "hardcore_mode" : [True],
-                  "compteur" : [0], # compteur de cases révélées
+                  "first_clic" : False,
+                  "hardcore_mode" : True,
+                  "compteur" : 0, # compteur de cases révélées
                   "size_x" : size_x, 
                   "size_y" : size_y, 
-                  "nb_mines" : nb_mines 
+                  "nb_mines" : nb_mines,
+                  "fin" : False
                   }
     creation_fenetre(parametres)
    

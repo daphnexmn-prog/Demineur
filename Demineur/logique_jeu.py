@@ -12,6 +12,7 @@ Fonctions :
 """
 
 from random import *
+from time import *
 
 def difficulte(niveau):
     """ Renvoie le nombre de lignes, colonnes et mines en fonction du niveau choisi
@@ -84,17 +85,17 @@ def grille_nombres(p):
             p["grille"][row][column]=compter_mines(p, row, column)  #créé la grille en utilisant la fonction compter_mines
     return p["grille"]
 
-def ajouter_drapeau(grille, row, column):
+def ajouter_drapeau(p, row, column):
     """ Ajoute un drapeau à la case souhaitée"""
-    grille[row][column] = "d" + str(grille[row][column]) 
-    return grille
+    p["grille"][row][column] = "d" + str(p["grille"][row][column])
+    p["drapeaux_restants"]["text"] -= 1
 
-def enlever_drapeau(grille, row, column):
+def enlever_drapeau(p, row, column):
     """ Enlève un drapeau à la case souhaitée """
-    grille[row][column] = grille[row][column][-1]
-    if grille[row][column] != "*" :
-        grille[row][column] = int(grille[row][column]) 
-    return grille
+    p["grille"][row][column] = p["grille"][row][column][-1]
+    if p["grille"][row][column] != "*" :
+        p["grille"][row][column] = int(p["grille"][row][column]) 
+    p["drapeaux_restants"]["text"] += 1
 
 def reveler_case(grille, row, column):
     """Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour"""
@@ -116,5 +117,9 @@ def zone_depart(p, row, column, proba):
 
 def gagne(p):
     """Condition de victoire"""
-    if p["compteur"][0] == p["size_y"] * p["size_y"] - p["nb_mines"] :
+    if p["compteur"] == p["size_y"] * p["size_y"] - p["nb_mines"] :
         return True
+
+def timer(p) : 
+    p["label_timer"]["text"] += 1 - p["fin"]
+    p["board"].after(1000, lambda p = p : timer(p))
