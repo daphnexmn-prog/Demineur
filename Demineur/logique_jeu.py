@@ -1,14 +1,15 @@
 """
 Fonctions :
     difficulte(niveau) : Renvoie le nombre de lignes, colonnes et mines en fonction du niveau choisi
-    create_board(p) : Crée la grille avec NB_MINES placées aléatoirement
+    create_board(p) : Crée la grille avec nb_mines mines placées aléatoirement
     compter_mines(p, row, column) : Compte le nombre de mines autour de chaque case et determine si la case est deja une mine
     grille_nombres(p) : Crée une grille comportant pour chaque case la valeur de la fonction compter_mines
-    ajouter_drapeau(grille, row, column) : Ajoute un drapeau à la case souhaitée
-    enlever_drapeau(grille, row, column) : Enlève un drapeau à la case souhaitée
+    ajouter_drapeau(p, row, column) : Ajoute un drapeau à la case souhaitée
+    enlever_drapeau(p, row, column) : Enlève un drapeau à la case souhaitée
     reveler_case(grille, row, column) : Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour
     zone_depart(p, row, column, proba) :
     gagne(p) : Condition de victoire
+    timer(p) : Actualise le timer à chaque seconde
 """
 
 from random import *
@@ -121,5 +122,9 @@ def gagne(p):
         return True
 
 def timer(p) : 
-    p["label_timer"]["text"] += 1 - p["fin"]
-    p["board"].after(1000, lambda p = p : timer(p))
+    """Actualise le timer à chaque seconde"""
+    if not p["fin"]: # si la partie n'est pas terminée
+        p["label_timer"]["text"] += 1 # ajoute 1 au compteur
+        p["board"].after(1000, lambda p = p : timer(p)) # répète la fonction après 1sec
+    else :
+        p["board"].after_cancel(p["after_id"]) # désactive l'after

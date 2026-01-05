@@ -5,6 +5,7 @@ from affichage_board import *
 def interface_accueil():
     """Crée l'interface d'accueil"""
     accueil = tk.Tk() # crée la fenêtre d'accueil
+    accueil.attributes("-topmost", True) # met la fenêtre au premier plan
     accueil.title("Démineur - Nouvelle partie")
     titre = ttk.Label(accueil, text="Démineur", font=("Helvetica", 20))
     lancer_partie = tk.Button(accueil, width = 100, height = 2, text = "Nouvelle partie", 
@@ -51,5 +52,7 @@ def debut_jeu(accueil):
                   "fin" : False
                   }
     creation_fenetre(parametres)
+    if messagebox.askyesno(message = "Souhaitez-vous recommencer ?") == True :
+        interface_accueil()
    
 interface_accueil()

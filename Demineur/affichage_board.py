@@ -2,7 +2,7 @@
 Affichage 
 """
 
-import tkinter as tk
+import tkinter as tk 
 import tkinter.ttk as ttk
 from tkinter import messagebox
 from logique_jeu import *
@@ -30,7 +30,7 @@ def creation_fenetre(p):
             p["boutons"][row-1][column] = bouton   # stocke chaque bouton dans la liste
     p["label_timer"] = ttk.Label(board, text = 0)
     p["label_timer"].grid(row = 0, column = 0)
-    board.after(1000, lambda p = p : timer(p))
+    p["after_id"] = board.after(1000, lambda p = p : timer(p)) # identifiant de l'after pour pouvoir le désactiver
     p["drapeaux_restants"] = ttk.Label(board, text = p["nb_mines"])
     p["drapeaux_restants"].grid(row = 0, column = p["size_x"]-1)
     board.mainloop() 
@@ -61,15 +61,16 @@ def clic_gauche(p, row, column):
         if case != "Drapeau" : 
             if case == "Mine" :
                 bouton.config(state = "disabled", text = "💣", bg = "red")
-                p["fin"] = True
+                p["fin"] = True # pour que le after s'arrête
                 messagebox.showinfo("", "Perdu !")
-                p["board"].destroy()
+                p["board"].after(10, p["board"].destroy) # détruit la fenêtre après 10ms 
+                # (sinon tkinter n'a pas fini de gérer les derniers clics de boutons)
             else :
                 reveler_zone(p, row, column)
                 if gagne(p) :
-                    p["fin"] = True
+                    p["fin"] = True # idem
                     messagebox.showinfo("Gagné !", "Vous avez gagné en "+ str(p["label_timer"]["text"])+" secondes !")
-                    p["board"].destroy()
+                    p["board"].after(10, p["board"].destroy) # idem
                     
 def clic_droit(p, row, column):
     """Ajoute/enlève un drapeau sur la case cliquée et désactive/réactive le bouton"""
