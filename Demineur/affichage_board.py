@@ -16,23 +16,31 @@ def creation_fenetre(p):
     """
     board = tk.Tk() # création de la fenêtre
     board.title("Démineur")
+    board.configure(bg = "#DEEFF4")
     p["board"] = board
-    for column in range(p["size_x"]):
-        for row in range(1,p["size_y"]+1):
-            bouton = tk.Button(board, width = 3) 
+    image_pixel = tk.PhotoImage(width = 1, height = 1) # crée une image de 1 pixel de côté pour pouvoir exprimer la taille du bouton en pixels
+    side = 3 if p["niveau"] == "Débutant" else 2
+    button_size = 40 if p["niveau"] == "Débutant" else 25
+    for row in range(side,p["size_y"]+side):
+        for column in range(side, p["size_x"]+side):
+            bouton = tk.Button(board, image = image_pixel, compound="c", width = button_size, height = button_size) 
             bouton.bind("<Button-1>", 
-                        lambda event, p = p, r = row-1, c = column : 
+                        lambda event, p = p, r = row-side, c = column-side : 
                         clic_gauche(p, r, c,)) # commande pour clic gauche
             bouton.bind("<Button-3>", 
-                        lambda event, p = p, r = row-1, c = column : 
+                        lambda event, p = p, r = row-side, c = column-side : 
                         clic_droit(p, r, c)) # commande pour clic droit
             bouton.grid(row = row, column = column) # place chaque bouton
-            p["boutons"][row-1][column] = bouton   # stocke chaque bouton dans la liste
-    p["label_timer"] = ttk.Label(board, text = 0)
-    p["label_timer"].grid(row = 0, column = 0)
+            p["boutons"][row-side][column-side] = bouton   # stocke chaque bouton dans la liste
+    p["label_timer"] = ttk.Label(board, text = 0, background = "#DEEFF4")
+    for i in range(side):
+        for j in range(side) : 
+            ttk.Label(board, text = "  ", background = "#DEEFF4").grid(row = i, column = p["size_x"]+ side + j)
+            ttk.Label(board, text = "  ", background = "#DEEFF4").grid(row = p["size_y"]+ side + i, column = j)
+    p["label_timer"].grid(row = 1, column = side)
     p["after_id"] = board.after(1000, lambda p = p : timer(p)) # identifiant de l'after pour pouvoir le désactiver
-    p["drapeaux_restants"] = ttk.Label(board, text = p["nb_mines"])
-    p["drapeaux_restants"].grid(row = 0, column = p["size_x"]-1)
+    p["drapeaux_restants"] = ttk.Label(board, text = p["nb_mines"], background = "#DEEFF4")
+    p["drapeaux_restants"].grid(row = 1, column = p["size_x"]+side-1)
     board.mainloop() 
 
 def clic_gauche(p, row, column): 
@@ -77,17 +85,17 @@ def clic_droit(p, row, column):
     bouton = p["boutons"][row][column]
     if reveler_case(p["grille"], row, column) == "Drapeau" : # s'il y a un drapeau
         enlever_drapeau(p, row, column)
-        bouton.config(text = "", state = "normal") # enlève le drapeau, réactive le bouton
+        bouton.config(text = "", state = "normal", bd = 0.5) # enlève le drapeau, réactive le bouton
     elif bouton["state"] != "disabled": # si la case n'est pas désactivée
         ajouter_drapeau(p, row, column)
-        bouton.config(text = "🚩", state = "disabled") # met le drapeau, désactive le bouton
+        bouton.config(text = "🚩", state = "disabled", bd = 0.5) # met le drapeau, désactive le bouton
 
 def reveler_zone(p, row, column):
     case = reveler_case(p["grille"], row, column)
     bouton = p["boutons"][row][column]
     if case != "Drapeau":
         if bouton["state"] != "disabled":
-            bouton.config(state = "disabled", relief = "groove", bg = "#CBEDD7", 
+            bouton.config(state = "disabled", relief = "sunken", bg = "#CBEDD7", bd = 0.5,
                           text = str(case) if case != 0 else "")
             p["compteur"] += 1
     if case == 0:

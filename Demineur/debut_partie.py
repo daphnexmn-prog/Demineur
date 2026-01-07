@@ -49,6 +49,7 @@ def debut_jeu(accueil):
                   "size_x" : size_x, 
                   "size_y" : size_y, 
                   "nb_mines" : nb_mines,
+                  "niveau": niveau,
                   "fin" : False
                   }
     creation_fenetre(parametres)
