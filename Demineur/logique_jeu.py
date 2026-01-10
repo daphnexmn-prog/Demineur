@@ -126,5 +126,3 @@ def timer(p) :
     if not p["fin"]: # si la partie n'est pas terminée
         p["label_timer"]["text"] += 1 # ajoute 1 au compteur
         p["board"].after(1000, lambda p = p : timer(p)) # répète la fonction après 1sec
-    else :
-        p["board"].after_cancel(p["after_id"]) # désactive l'after

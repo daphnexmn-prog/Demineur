@@ -50,7 +50,8 @@ def debut_jeu(accueil):
                   "size_y" : size_y, 
                   "nb_mines" : nb_mines,
                   "niveau": niveau,
-                  "fin" : False
+                  "fin" : False,
+                  "cases_desactivees" : []
                   }
     creation_fenetre(parametres)
     if messagebox.askyesno(message = "Souhaitez-vous recommencer ?") == True :
