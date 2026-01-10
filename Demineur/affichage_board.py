@@ -4,8 +4,10 @@ Affichage
 
 import tkinter as tk 
 import tkinter.ttk as ttk
+from PIL import Image, ImageTk
 from tkinter import messagebox
 from logique_jeu import *
+import gestion_images
 
 def creation_fenetre(p):
     """ Crée la fenêtre avec les boutons 
@@ -18,6 +20,8 @@ def creation_fenetre(p):
     board.title("Démineur")
     board.configure(bg = "#DEEFF4")
     p["board"] = board
+    images = gestion_images.charger_images()  # charge les images après création de la fenêtre principale
+    p["images"] = images
     image_pixel = tk.PhotoImage(width = 1, height = 1) # crée une image de 1 pixel de côté pour pouvoir exprimer la taille du bouton en pixels
     side = 3 if p["niveau"] == "Débutant" else 2
     button_size = 40 if p["niveau"] == "Débutant" else 25
@@ -31,6 +35,7 @@ def creation_fenetre(p):
                         lambda event, p = p, r = row-side, c = column-side : 
                         clic_droit(p, r, c)) # commande pour clic droit
             bouton.grid(row = row, column = column) # place chaque bouton
+            bouton.config(image = images["Bouton"]) # assigne l'image du bouton
             p["boutons"][row-side][column-side] = bouton   # stocke chaque bouton dans la liste
     p["label_timer"] = ttk.Label(board, text = 0, background = "#DEEFF4")
     for i in range(side):
@@ -68,7 +73,7 @@ def clic_gauche(p, row, column):
     if bouton["state"] != "disabled":
         if case != "Drapeau" : 
             if case == "Mine" :
-                bouton.config(state = "disabled", text = "💣", bg = "red")
+                bouton.config(state = "disabled", image = p["images"]["Mine"])
                 p["fin"] = True # pour que le after s'arrête
                 messagebox.showinfo("", "Perdu !")
                 p["board"].after(10, p["board"].destroy) # détruit la fenêtre après 10ms 
@@ -83,20 +88,21 @@ def clic_gauche(p, row, column):
 def clic_droit(p, row, column):
     """Ajoute/enlève un drapeau sur la case cliquée et désactive/réactive le bouton"""
     bouton = p["boutons"][row][column]
+    if p["first_clic"] == False:
+        return
     if reveler_case(p["grille"], row, column) == "Drapeau" : # s'il y a un drapeau
         enlever_drapeau(p, row, column)
-        bouton.config(text = "", state = "normal", bd = 0.5) # enlève le drapeau, réactive le bouton
+        bouton.config(state = "normal", image = p["images"]["Bouton"], bd = 0.5) # enlève le drapeau, réactive le bouton
     elif bouton["state"] != "disabled": # si la case n'est pas désactivée
         ajouter_drapeau(p, row, column)
-        bouton.config(text = "🚩", state = "disabled", bd = 0.5) # met le drapeau, désactive le bouton
+        bouton.config(state = "disabled", image = p["images"]["Drapeau"], bd = 0.5) # met le drapeau, désactive le bouton
 
 def reveler_zone(p, row, column):
     case = reveler_case(p["grille"], row, column)
     bouton = p["boutons"][row][column]
     if case != "Drapeau":
         if bouton["state"] != "disabled":
-            bouton.config(state = "disabled", relief = "sunken", bg = "#CBEDD7", bd = 0.5,
-                          text = str(case) if case != 0 else "")
+            bouton.config(state = "disabled", relief = "sunken", image = p["images"][case], bd = 0.5)
             p["compteur"] += 1
     if case == 0:
         for x in range(-1, 2):
@@ -107,3 +113,5 @@ def reveler_zone(p, row, column):
                     if p["boutons"][new_row][new_col]["state"] != "disabled" \
                         and not (new_row == row and new_col == column):
                         reveler_zone(p, new_row, new_col)
+
+
