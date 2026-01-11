@@ -59,9 +59,10 @@ def clic_gauche(p, row, column):
     column : int
         Colonne
     """
+    
     if p["first_clic"] == False:
         p["first_clic"] = True
-        if p["hardcore_mode"] == True:
+        if p["hardcore_mode"] == False:
             proba = 1.3     #proba > 1 pour garantir les premieres cases
             zone_depart(p, row, column, proba)
         else:
@@ -85,6 +86,7 @@ def clic_gauche(p, row, column):
                     p["fin"] = True # idem
                     messagebox.showinfo("Gagné !", "Vous avez gagné en "+ str(p["label_timer"]["text"])+" secondes !")
                     p["board"].after(10, p["board"].destroy) # idem
+    return "break"
                     
 def clic_droit(p, row, column):
     """Ajoute/enlève un drapeau sur la case cliquée et désactive/réactive le bouton"""
@@ -106,8 +108,8 @@ def reveler_zone(p, row, column):
     bouton = p["boutons"][row][column]
     if case != "Drapeau":
         if bouton not in p["cases_desactivees"]:
-            bouton.config(relief = "sunken", image = p["images"][case])
             p["cases_desactivees"].append(bouton)
+            bouton.config(relief = "sunken", image = p["images"][case])
             p["compteur"] += 1
     if case == 0:
         for x in range(-1, 2):
@@ -115,8 +117,7 @@ def reveler_zone(p, row, column):
                 new_row = row + y
                 new_col = column + x
                 if 0 <= new_row < p["size_y"] and 0 <= new_col < p["size_x"] :
-                    if p["boutons"][new_row][new_col] not in p["cases_desactivees"] \
-                        and not (new_row == row and new_col == column):
+                    if p["boutons"][new_row][new_col] not in p["cases_desactivees"]:
                         reveler_zone(p, new_row, new_col)
-
-
+    
+                    

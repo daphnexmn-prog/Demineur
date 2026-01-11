@@ -8,7 +8,7 @@ def interface_accueil():
     accueil.attributes("-topmost", True) # met la fenêtre au premier plan
     accueil.title("Démineur - Nouvelle partie")
     titre = ttk.Label(accueil, text="Démineur", font=("Helvetica", 20))
-    lancer_partie = tk.Button(accueil, width = 100, height = 2, text = "Nouvelle partie", 
+    lancer_partie = tk.Button(accueil, width = 100, height = 3, text = "Nouvelle partie", 
                               command = lambda a = accueil : debut_jeu(a))
     titre.pack() # place le titre
     lancer_partie.pack() # place le bouton de nouvelle partie
@@ -24,10 +24,9 @@ def choix_niveau(accueil):
         accueil.destroy() # ferme l'écran d'accueil
         menu = tk.Tk() # crée une fenêtre menu
         menu.title("Choix du niveau")
-        menu.geometry("500x120")
         choix = tk.StringVar() # crée la variable pour récupérer le niveau
-        for niveau in ["Débutant", "Intermédiaire", "Avancé"]:
-            option = tk.Button(menu, width = 100, height = 2, text = niveau,
+        for niveau in ["Débutant", "Intermédiaire", "Avancé", "Avancé Hardcore"]:
+            option = tk.Button(menu, width = 100, height = 4, text = niveau,
                 command = lambda n = niveau : (choix.set(n), menu.destroy()))
             option.pack()
         menu.wait_window() # attend que la fenêtre menu soit détruite pour passer à la suite
@@ -44,7 +43,7 @@ def debut_jeu(accueil):
                   "grille" : grille, 
                   "boutons" : boutons,
                   "first_clic" : False,
-                  "hardcore_mode" : True,
+                  "hardcore_mode" : True if niveau == "Avancé Hardcore" else False,
                   "compteur" : 0, # compteur de cases révélées
                   "size_x" : size_x, 
                   "size_y" : size_y, 

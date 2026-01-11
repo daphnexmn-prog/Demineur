@@ -27,7 +27,7 @@ def difficulte(niveau):
         return (9, 9, 10)
     if niveau == "Intermédiaire":
         return (16, 16, 40)
-    if niveau == "Avancé":
+    if niveau == "Avancé" or niveau == "Avancé Hardcore":
         return (16, 30, 99)
 
 def create_board(p):
