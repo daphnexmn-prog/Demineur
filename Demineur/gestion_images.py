@@ -2,7 +2,7 @@
 from PIL import Image, ImageTk
 import tkinter as tk
 IMAGE_SIZE = 16  # taille réelle d’une image
-image_path = "demineur_sprite_sheet.png"
+image_path = "Demineur\demineur_sprite_sheet.png"
 sprite_sheet = Image.open(image_path) 
 
 def decouper_image(col, row, niveau):
