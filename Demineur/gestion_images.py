@@ -1,11 +1,10 @@
 
 from PIL import Image, ImageTk
-import tkinter as tk
 IMAGE_SIZE = 16  # taille réelle d’une image
-image_path = "Demineur\demineur_sprite_sheet.png"
+image_path = "demineur_sprite_sheet.png"
 sprite_sheet = Image.open(image_path) 
 
-def decouper_image(col, row, niveau):
+def decouper_image(col, row, niveau) :
     
     x1 = col * IMAGE_SIZE
     y1 = row * IMAGE_SIZE
@@ -18,7 +17,6 @@ def decouper_image(col, row, niveau):
         image = image.resize((25, 25))
     image = ImageTk.PhotoImage(image)
     return image
-
 
 def charger_images(niveau):
     """Charge et retourne le dictionnaire des images"""
@@ -34,6 +32,6 @@ def charger_images(niveau):
         0: decouper_image(0, 2, niveau),
         "Bouton" : decouper_image(1, 2, niveau),
         "Mine": decouper_image(2, 2, niveau),
-        "Drapeau": decouper_image(3, 2, niveau),
+        "Drapeau" : decouper_image(3, 2, niveau),
     }
     return images
