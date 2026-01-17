@@ -2,7 +2,7 @@ from random import randint
 from PIL import Image, ImageTk
 import pygame
 IMAGE_SIZE = 16  # taille réelle d’une image
-image_path = "Demineur/demineur_sprite_sheet.png"
+image_path = "demineur_sprite_sheet.png"
 sprite_sheet = Image.open(image_path) 
 
 def decouper_image(col, row, niveau) :
@@ -39,19 +39,19 @@ def charger_images(niveau):
 
 pygame.mixer.init()
 
-Son_win = pygame.mixer.Sound('Demineur/musiques/Win.mp3')
-Son_lose = pygame.mixer.Sound('Demineur/musiques/Game_over.mp3')
-Son_clic = pygame.mixer.Sound('Demineur/musiques/Clic.wav')
-Son_explosion = pygame.mixer.Sound('Demineur/musiques/Explosion.mp3')
-Enlever_drapeau = pygame.mixer.Sound('Demineur/musiques/Enlever_drapeau.wav')
-Placer_drapeau = pygame.mixer.Sound('Demineur/musiques/Placer_drapeau.wav')
-Propagation = pygame.mixer.Sound('Demineur/musiques/Propagation_des_0.mp3')
+Son_win = pygame.mixer.Sound('musiques/Win.mp3')
+Son_lose = pygame.mixer.Sound('musiques/Game_over.mp3')
+Son_clic = pygame.mixer.Sound('musiques/Clic.wav')
+Son_explosion = pygame.mixer.Sound('musiques/Explosion.mp3')
+Enlever_drapeau = pygame.mixer.Sound('musiques/Enlever_drapeau.wav')
+Placer_drapeau = pygame.mixer.Sound('musiques/Placer_drapeau.wav')
+Propagation = pygame.mixer.Sound('musiques/Propagation_des_0.mp3')
 
 
 def musique_suivante(p):
     numero = randint(1,4)
-    pygame.mixer.music.load("Demineur/musiques/Musique_"+str(numero)+".mp3")
+    pygame.mixer.music.load("musiques/Musique_"+str(numero)+".mp3")
     pygame.mixer.music.play()
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    duree=pygame.mixer.Sound("Demineur/musiques/Musique_"+str(numero)+".mp3").get_length()
+    duree=pygame.mixer.Sound("musiques/Musique_"+str(numero)+".mp3").get_length()
     p["board"].after(int(duree * 1000), musique_suivante, p)
