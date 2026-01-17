@@ -2,10 +2,11 @@
 Affichage 
 """
 
+import time
 import tkinter as tk 
 from tkinter import messagebox
 from logique_jeu import *
-import gestion_images
+from gestion_images_et_musiques import *
 
 def creation_fenetre(p):
     """ Crée la fenêtre avec les boutons 
@@ -18,11 +19,11 @@ def creation_fenetre(p):
     p["board"].title("Démineur")
     p["board"].configure(bg = "#DEEFF4")
     side = 3 if p["niveau"] == "Débutant" else 2 # taille de la bordure
-    p["images"] = gestion_images.charger_images(p["niveau"])  # charge les images après création de la fenêtre principale
-    button_size = 45 if p["niveau"] == "Débutant" else 25 # taille des boutons
+    p["images"] = charger_images(p["niveau"])  # charge les images après création de la fenêtre principale
+    button_size = 50 if p["niveau"] == "Débutant" else 30 # taille des boutons
     for row in range(side, p["size_y"] + side):
         for column in range(side, p["size_x"] + side):
-            bouton = tk.Button(p["board"], image = p["images"]["Bouton"], width = button_size, height = button_size) 
+            bouton = tk.Button(p["board"], image = p["images"]["Bouton"], width = button_size, height = button_size, bd = 0, highlightthickness = 0) # crée chaque bouton
             bouton.bind("<Button-1>", 
                         lambda event, p = p, r = row - side, c = column - side : 
                         clic_gauche(p, r, c,)) # commande pour clic gauche
@@ -41,6 +42,7 @@ def creation_fenetre(p):
     p["board"].after(1000, lambda p = p : timer(p)) # commence à exécuter timer après 1sec
     p["label_timer"].grid(row = 1, column = side)
     p["drapeaux_restants"].grid(row = 1, column = p["size_x"] + side - 1)
+    musique_suivante(p)
     p["board"].mainloop() 
 
 def clic_gauche(p, row, column): 
@@ -69,12 +71,21 @@ def clic_gauche(p, row, column):
         if case == "Mine" :
             reveler_mines(p)
             p["fin"] = True # pour que le after s'arrête
+            pygame.mixer.music.stop()
+            Son_explosion.play()
+            Son_lose.play()
             messagebox.showinfo("Perdu !", "Perdu !")
             p["board"].after(10, p["board"].destroy) # détruit la fenêtre après 10ms 
         else :
-            reveler_zone(p, row, column)
+            zero = reveler_zone(p, row, column)
+            if zero :
+                Propagation.play()
+            else :
+                Son_clic.play()
             if gagne(p) :
                 p["fin"] = True 
+                pygame.mixer.music.stop()
+                Son_win.play()
                 messagebox.showinfo("Gagné !", "Vous avez gagné en "+ str(p["label_timer"]["text"])+" secondes !")
                 p["board"].after(10, p["board"].destroy) 
     return "break"
@@ -94,24 +105,28 @@ def clic_droit(p, row, column):
     bouton = p["boutons"][row][column]
     if not p["first_clic"] :
         return
-    if reveler_case(p["grille"], row, column) == "Drapeau" : # s'il y a un drapeau
+    if reveler_case(p["grille"], row, column) == "Drapeau" : # s'il y a un drapeau 
         enlever_drapeau(p, row, column)
         bouton.config(image = p["images"]["Bouton"]) # enlève le drapeau
+        Enlever_drapeau.play()
         p["cases_desactivees"].remove(bouton) 
-    elif bouton not in p["cases_desactivees"] : # si la case n'est pas désactivée
+    elif bouton not in p["cases_desactivees"] and p["drapeaux_restants"]["text"] > 0 : # si la case n'est pas désactivée et qu'il reste des drapeaux à placer
         ajouter_drapeau(p, row, column)
         bouton.config(image = p["images"]["Drapeau"]) # met le drapeau 
+        Placer_drapeau.play()
         p["cases_desactivees"].append(bouton) 
 
 def reveler_zone(p, row, column) :
     case = reveler_case(p["grille"], row, column)
     bouton = p["boutons"][row][column]
+    PROPAGATION_DES_0 = False
     if case != "Drapeau":
         if bouton not in p["cases_desactivees"]:
             p["cases_desactivees"].append(bouton)
             bouton.config(relief = "sunken", image = p["images"][case])
             p["compteur"] += 1
     if case == 0:
+        PROPAGATION_DES_0 = True
         for x in range(-1, 2) :
             for y in range(-1, 2) :
                 new_row = row + y
@@ -119,3 +134,5 @@ def reveler_zone(p, row, column) :
                 if 0 <= new_row < p["size_y"] and 0 <= new_col < p["size_x"] :
                     if p["boutons"][new_row][new_col] not in p["cases_desactivees"] :
                         reveler_zone(p, new_row, new_col)
+    return PROPAGATION_DES_0
+    
