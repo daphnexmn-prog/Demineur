@@ -134,6 +134,23 @@ def zone_depart(p, row, column, proba) :
                     if random() <= proba:   #genere un nombre entre 0 et 1, devant être inférieur à proba pour supprimer cette case
                         zone_depart(p, row + dy, column + dx, proba * 0.7)    #pour déterminer aléatoirement les cases safes
 
+def reveler_mines(p):
+    """ Révèle toutes les mines sur le board à la fin de la partie
+
+    Parameters
+    ----------
+    p : dict
+        Dictionnaire contenant tous les paramètres
+    """
+    for row in range(p["size_y"]):
+        for column in range(p["size_x"]):
+            case = reveler_case(p["grille"], row, column)
+            bouton = p["boutons"][row][column]
+            if case == "Mine" and bouton not in p["cases_desactivees"]:
+                bouton.config(image = p["images"]["Mine"])
+                p["cases_desactivees"].append(bouton)
+
+
 def gagne(p):
     """ Condition de victoire, si le joueur a cliqué sur toutes les cases sauf les mines
 

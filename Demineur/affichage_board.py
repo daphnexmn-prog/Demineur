@@ -67,8 +67,7 @@ def clic_gauche(p, row, column):
     case = reveler_case(p["grille"], row, column)
     if bouton not in p["cases_desactivees"] and case != "Drapeau" :
         if case == "Mine" :
-            bouton.config(image = p["images"]["Mine"])
-            p["cases_desactivees"].append(bouton)
+            reveler_mines(p)
             p["fin"] = True # pour que le after s'arrête
             messagebox.showinfo("Perdu !", "Perdu !")
             p["board"].after(10, p["board"].destroy) # détruit la fenêtre après 10ms 
