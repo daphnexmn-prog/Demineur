@@ -1,51 +1,34 @@
 """
-Fonctions :
-    difficulte(niveau) : Renvoie le nombre de lignes, colonnes et mines en fonction du niveau choisi
-    create_board(p) : Crée la grille avec nb_mines mines placées aléatoirement
-    compter_mines(p, row, column) : Compte le nombre de mines autour de chaque case et determine si la case est deja une mine
-    grille_nombres(p) : Crée une grille comportant pour chaque case la valeur de la fonction compter_mines
-    ajouter_drapeau(p, row, column) : Ajoute un drapeau à la case souhaitée
-    enlever_drapeau(p, row, column) : Enlève un drapeau à la case souhaitée
-    reveler_case(grille, row, column) : Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour
-    zone_depart(p, row, column, proba) :
-    gagne(p) : Condition de victoire
-    timer(p) : Actualise le timer à chaque seconde
+logique_jeu
+Ce fichier gère :
+- la création de la grille
+- le type de cases
+- la création d'une zone de départ
+- la condition de victoire
+- le timer
 """
 
 from random import *
 
-def difficulte(niveau) :
-    """ Renvoie le nombre de lignes, colonnes et mines en fonction du niveau choisi
-
-    Parameters
-    ----------
-    niveau : str
-        Le niveau choisi
-
-    Returns
-    -------
-    tuple
-        tuple contenant respectivement le nombre de lignes, le nombre de colonnes, le nombre de mines 
-    """
-    if niveau == "Débutant" :
-        return (9, 9, 10)
-    if niveau == "Intermédiaire":
-        return (16, 16, 40)
-    if niveau == "Avancé" or niveau == "Avancé Hardcore":
-        return (16, 30, 99)
-
 def create_board(p) :
     """ Crée la grille avec nb_mines mines placées aléatoirement
 
+    Parameters
+    ----------
+    p : dict
+        Dictionnaire contenant tous les paramètres
+    
     Returns
     -------
     list[list[int]]
         La grille remplie de 0 (case vide) et de 1 (bombe)
     """
-    mines_count = 0 # compteur de mines 
+    mines_count = 0 # compteur de mines placées
     while mines_count < p["nb_mines"] :
-        randx = randint(0, p["size_x"] - 1) # colonne aléatoire
-        randy = randint(0, p["size_y"] - 1) # ligne aléatoire
+        # Détermine une ligne et une colonne aléatoire
+        randx = randint(0, p["size_x"] - 1) 
+        randy = randint(0, p["size_y"] - 1) 
+        # Place la mine si la case n'est pas déjà une mine
         if p["tiles"][randy][randx] == 0 :
             p["tiles"][randy][randx] = 1
             mines_count += 1
@@ -54,22 +37,34 @@ def create_board(p) :
 def compter_mines(p, row, column) :
     """ Compte le nombre de mines autour de chaque case et determine si la case est deja une mine
 
+    Parameters
+    ----------
+    p : dict
+        Dictionnaire contenant tous les paramètres
+    row : int
+        Ligne
+    column : int
+        Colonne
+
     Returns
     -------
     list[list[int ou str]]
         La grille remplie de * (bombe) ou de int (case vide)
     """
-    if p["tiles"][row][column] == 1 :   #vérifie si la case est une mine
+    # Vérifie si la case est une mine
+    if p["tiles"][row][column] == 1 :   
         return "*"
     else :
-        mine_case = 0
-        for x in range (-1, 2) :  #parcourt les cases voisines
+        mine_case = 0 # nombre de mines autour d'une case
+        # Parcourt les cases voisines
+        for x in range (-1, 2) :  
             for y in range (-1, 2) :
                 new_col = column + x
                 new_row = row + y
-                if 0 <= new_col < p["size_x"] and 0 <= new_row < p["size_y"] :   #vérifie que les cases voisines ne sont pas out of range
+                # Vérifie que les cases voisines ne sont pas out of range
+                if 0 <= new_col < p["size_x"] and 0 <= new_row < p["size_y"] :   
                     if p["tiles"][new_row][new_col] == 1 : 
-                        mine_case += 1  #compte le nombre de mines autour de la case
+                        mine_case += 1  # compte le nombre de mines autour de la case
         return mine_case
 
 def grille_nombres(p):
@@ -85,24 +80,13 @@ def grille_nombres(p):
     str(*) si la case est une mine
     int(mine_case) le nombre de mines autour d'une case n'étant pas une mine
     """
+    # Crée la grille en utilisant la fonction compter_mines
     for column in range (p["size_x"]) :
         for row in range (p["size_y"]) :
-            p["grille"][row][column] = compter_mines(p, row, column)  #créé la grille en utilisant la fonction compter_mines
+            p["grille"][row][column] = compter_mines(p, row, column)  
     return p["grille"]
 
-def ajouter_drapeau(p, row, column) :
-    """ Ajoute un drapeau à la case souhaitée """
-    p["grille"][row][column] = "d" + str(p["grille"][row][column])
-    p["drapeaux_restants"]["text"] -= 1
-
-def enlever_drapeau(p, row, column) :
-    """ Enlève un drapeau à la case souhaitée """
-    p["grille"][row][column] = p["grille"][row][column][-1]
-    if p["grille"][row][column] != "*" :
-        p["grille"][row][column] = int(p["grille"][row][column]) 
-    p["drapeaux_restants"]["text"] += 1
-
-def reveler_case(grille, row, column) :
+def case_type(grille, row, column) :
     """Renvoie si la case est une mine, marquée par un drapeau ou le nombre de mines autour
 
     Parameters
@@ -126,13 +110,37 @@ def reveler_case(grille, row, column) :
         return grille[row][column] # le nombre de mines autour
 
 def zone_depart(p, row, column, proba) :
-    if 0 <= column < p["size_x"] and 0 <= row < p["size_y"] :   #vérifie que la case n'est pas out of range
+    """ Crée une zone de départ safe
+
+    Parameters
+    ----------
+    p : dict
+        Dictionnaire contenant tous les paramètres
+    row : int
+        Ligne
+    column : int
+        Colonne
+    proba : float
+        
+    """
+    # Vérifie que la case n'est pas out of range
+    if 0 <= column < p["size_x"] and 0 <= row < p["size_y"] :  
         if p["tiles"][row][column] != [] :
-            if proba >= 0.2:   #empêche d'avoir une zone trop grande
-                p["tiles"][row][column] = []    #empeche de placer une mine ici
-                for dx, dy in [(0, -1), (0, 1), (1, 0), (-1, 0)] :   #parcourt les cases cases adjacentes (gauche,droite,haut,bas)
-                    if random() <= proba:   #genere un nombre entre 0 et 1, devant être inférieur à proba pour supprimer cette case
-                        zone_depart(p, row + dy, column + dx, proba * 0.7)    #pour déterminer aléatoirement les cases safes
+
+            # Empêche d'avoir une zone trop grande
+            if proba >= 0.2:   
+
+                # Empêche de placer une mine ici
+                p["tiles"][row][column] = []
+
+                # Parcourt les cases adjacentes (gauche, droite, haut, bas)
+                for dx, dy in [(0, -1), (0, 1), (1, 0), (-1, 0)] :  
+
+                    # Génère un nombre entre 0 et 1, 
+                    # devant être inférieur à proba pour supprimer cette case
+                    # pour déterminer aléatoirement les cases safe
+                    if random() <= proba:   
+                        zone_depart(p, row + dy, column + dx, proba * 0.7)    
 
 def reveler_mines(p):
     """ Révèle toutes les mines sur le board à la fin de la partie
@@ -142,24 +150,30 @@ def reveler_mines(p):
     p : dict
         Dictionnaire contenant tous les paramètres
     """
-    for row in range(p["size_y"]):
-        for column in range(p["size_x"]):
-            case = reveler_case(p["grille"], row, column)
+    # Parcourt la grille
+    for row in range(p["size_y"]) :
+        for column in range(p["size_x"]) :
+            # Détermine la case et le bouton 
+            case = case_type(p["grille"], row, column)
             bouton = p["boutons"][row][column]
-            if case == "Mine" and bouton not in p["cases_desactivees"]:
+            # Affiche les mines
+            if case == "Mine" and bouton not in p["cases_desactivees"] :
                 bouton.config(image = p["images"]["Mine"])
                 p["cases_desactivees"].append(bouton)
 
 
 def gagne(p):
     """ Condition de victoire, si le joueur a cliqué sur toutes les cases sauf les mines
+    Parameters
+    ----------
+    p : dict
+        Dictionnaire contenant tous les paramètres
 
     Returns
     -------
-    True ou None
+    True ou False
     """
-    if p["compteur"] == p["size_y"] * p["size_x"] - p["nb_mines"] : 
-        return True
+    return p["compteur"] == p["size_y"] * p["size_x"] - p["nb_mines"] 
 
 def timer(p) : 
     """Actualise le timer à chaque seconde
