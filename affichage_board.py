@@ -83,6 +83,11 @@ def reveler_zone(p, row, column) :
         Ligne
     column : int
         Colonne
+    
+    Returns
+    -------
+    bool
+        True si une propagation des zéros a été réalisée, False sinon (servant à déterminer quel son jouer)
     """
     # Détermine le bouton cliqué et la case de la grille correspondante
     bouton = p["boutons"][row][column]

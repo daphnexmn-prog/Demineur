@@ -82,6 +82,8 @@ Son_win = pygame.mixer.Sound('musiques/Win.mp3')
 Son_lose = pygame.mixer.Sound('musiques/Game_over.mp3')
 Son_clic = pygame.mixer.Sound('musiques/Clic.wav')
 Son_explosion = pygame.mixer.Sound('musiques/Explosion.mp3')
+Son_menu_clic_1 = pygame.mixer.Sound('musiques/Menu_clic_1.mp3')
+Son_menu_clic_2 = pygame.mixer.Sound('musiques/Menu_clic_2.mp3')
 Enlever_drapeau = pygame.mixer.Sound('musiques/Enlever_drapeau.wav')
 Placer_drapeau = pygame.mixer.Sound('musiques/Placer_drapeau.wav')
 Propagation = pygame.mixer.Sound('musiques/Propagation_des_0.mp3')
@@ -94,8 +96,11 @@ def musique_suivante(p):
     p : dict
         Le dictionnaire contenant tous les paramètres
     """
+    if p["fin"]: # si la partie n'est pas terminée
+        return # pour éviter de lancer une nouvelle musique après la fin de la partie
+    
     # Choisit un numéro de musique aléatoire
-    numero = randint(1,4)
+    numero = randint(1,7)
 
     # Joue la musique
     pygame.mixer.music.load("musiques/Musique_" + str(numero) + ".mp3")

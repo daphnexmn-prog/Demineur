@@ -153,13 +153,14 @@ def reveler_mines(p):
     # Parcourt la grille
     for row in range(p["size_y"]) :
         for column in range(p["size_x"]) :
-            # Détermine la case et le bouton 
-            case = case_type(p["grille"], row, column)
             bouton = p["boutons"][row][column]
-            # Affiche les mines
-            if case == "Mine" and bouton not in p["cases_desactivees"] :
-                bouton.config(image = p["images"]["Mine"])
-                p["cases_desactivees"].append(bouton)
+            case = case_type(p["grille"], row, column) # pour savoir s'il s'agit d'un drapeau
+            etat_case = p["tiles"][row][column] # pour savoir si la case est une mine
+            # Revèle le board résolu
+            if case != "Drapeau" and etat_case == 1  : # Revèle la mine si elle n'est pas marquée par un drapeau
+                bouton.config(image = p["images"]["Mine"]) 
+            elif case == "Drapeau" and etat_case != 1 : # Enleve le drapeau si la case n'est pas une mine
+                bouton.config(image = p["images"]["Bouton"])
 
 
 def gagne(p):
