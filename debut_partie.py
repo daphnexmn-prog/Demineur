@@ -20,9 +20,10 @@ def interface_accueil() :
     accueil.attributes("-topmost", True) # met la fenêtre au premier plan
     accueil.title("Démineur - Nouvelle partie")
 
-    pygame.mixer.init()
+    # Lance la musique de menu
+    pygame.mixer.init() # initialise le mixer
     pygame.mixer.music.load("musiques/Musique_menu.mp3")
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(-1) # le -1 permet de jouer la musique en boucle
 
     # Image de la fenêtre d'accueil
     image_logo = Image.open("demineur_logo.png")
@@ -53,7 +54,7 @@ def choix_niveau() :
         # Bouton pour chaque niveau
         for niveau in ["Débutant", "Intermédiaire", "Avancé", "Avancé Hardcore"]:
             option = tk.Button(menu, width = 100, height = 4, text = niveau,
-                command = lambda n = niveau : (choix.set(n), menu.destroy(), Son_menu_clic_2.play()))
+                command = lambda n = niveau : (choix.set(n), menu.destroy(), Son_menu_clic_2.play())) #
             option.pack()
         menu.wait_window() # attend que la fenêtre menu soit détruite pour passer à la suite
         return choix.get() 

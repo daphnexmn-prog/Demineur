@@ -88,6 +88,7 @@ Enlever_drapeau = pygame.mixer.Sound('musiques/Enlever_drapeau.wav')
 Placer_drapeau = pygame.mixer.Sound('musiques/Placer_drapeau.wav')
 Propagation = pygame.mixer.Sound('musiques/Propagation_des_0.mp3')
 
+pygame.mixer.music.set_volume(0.7) # pour diminuer et équilibrer le volume des musiques de fond
 
 def musique_suivante(p):
     """ Lance la musique suivante choisie aléatoirement
@@ -96,16 +97,15 @@ def musique_suivante(p):
     p : dict
         Le dictionnaire contenant tous les paramètres
     """
-    if p["fin"]: # si la partie n'est pas terminée
+    if p["fin"]: # si la partie est terminée
         return # pour éviter de lancer une nouvelle musique après la fin de la partie
     
     # Choisit un numéro de musique aléatoire
-    numero = randint(1,7)
+    numero = randint(1,12)
 
     # Joue la musique
-    pygame.mixer.music.load("musiques/Musique_" + str(numero) + ".mp3")
+    pygame.mixer.music.load("musiques/Musique_" + str(numero) + ".mp3") # charge la musique associée au numéro aléatoire
     pygame.mixer.music.play()
-    pygame.mixer.music.set_endevent(pygame.USEREVENT)
     duree = pygame.mixer.Sound("musiques/Musique_" + str(numero) + ".mp3").get_length()
 
     # Exécute de nouveau la fonction à la fin de la musique
